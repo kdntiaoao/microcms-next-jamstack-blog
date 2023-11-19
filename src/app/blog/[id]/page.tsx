@@ -1,10 +1,13 @@
 import { client } from '@/libs/client';
 import { Blog } from '@/types/blog';
 import Link from 'next/link';
+import { loadDefaultJapaneseParser } from 'budoux';
 
 type Props = {
   params: { id: string };
 };
+
+const parser = loadDefaultJapaneseParser();
 
 export async function generateStaticParams() {
   const data = await client.get({ endpoint: 'blog' });
@@ -31,7 +34,9 @@ export default async function BlogId({ params }: Props) {
       <div
         className="mt-8"
         dangerouslySetInnerHTML={{
-          __html: `${blog.body}`,
+          __html: `${parser.translateHTMLString(
+            '<div>' + blog.body + '</div>'
+          )}`,
         }}
       ></div>
     </main>
